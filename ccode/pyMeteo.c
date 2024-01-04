@@ -76,8 +76,14 @@ MeteoWeather *pyMeteo(const char *name, int year, int month, int day){
 }
 
 int main(int argc, char const *argv[]) {
-  MeteoWeather* weather = pyMeteo("豊洲キャンパス", 2024, 1, 6);
-  printf("2024-01-06\n");
+  char name[100];
+  int year, month, day;
+  printf("どこの天気を調べますか\n> ");
+  scanf("%s", name);
+  printf("いつの天気ですか（二週間先まで、半角）\ny m d 年 月 日\n> ");
+  scanf("%d %d %d", &year, &month, &day);
+  MeteoWeather* weather = pyMeteo(name, year, month, day);
+  printf("%04d-%02d-%02d\n", year, month, day);
   printf("%sの天候をお知らせします\n", weather->fullname);
   printf("天気は%sです\n", weather->weather_msg);
   printf("最高気温は%.1lf℃です\n", weather->max_temperature);
