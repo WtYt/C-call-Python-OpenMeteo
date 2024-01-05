@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <Python.h>
 #include "pyMeteo.h"
 
 #define MAX_CLIENTS 10
@@ -69,6 +70,7 @@ int main (int argc, char *argv[])
     }
   }
   close(sockfd);
+  Py_Finalize();
   return 0;
 }
 
@@ -81,11 +83,10 @@ void *handle_client(void *arg){
   char method[16];
   char version[16];
   MeteoWeather* weather;
-  time_t t = time(NULL);
-	struct tm *local = localtime(&t);
   memset(buf, 0, BUFSIZ);
+  Py_Initialize();
+  len = recv(new_sockfd, buf, BUFSIZ, 0);
   while(strncasecmp(buf, "exit", 4) != 0){
-    len = recv(new_sockfd, buf, BUFSIZ, 0);
     buf[len] = '\0';
     printf("recieved %s\n", buf);
     // normal request is "name y-m-d" style
@@ -103,7 +104,7 @@ void *handle_client(void *arg){
       if(flag != 4){
         printf("invalid request \"%s\"\n", buf);
         sprintf(msg, "invalid request \"%s\"\n", buf);
-        len = send (new_sockfd, msg, 18, 0);
+        len = send (new_sockfd, msg, BUFSIZ+18, 0);
         break;
       }
       else{
@@ -138,17 +139,18 @@ void *handle_client(void *arg){
       printf("invalid request \"%s\"\n", buf);
       sprintf(msg, "invalid request \"%s\"\n", buf);
       len = send (new_sockfd, msg, 18, 0);
+      len = recv(new_sockfd, buf, BUFSIZ, 0);
     }
     else{
+      printf("got weather\n");
       weather = pyMeteo(name, year, month, day);
       sprintf(msg, "%04d年の%02d月%02d日の%sの天候をお知らせします\n天気は%sです\n最高気温は%.1lf℃です\n最低気温は%.1lf℃です\n",
               year, month, day, weather->fullname, weather->weather_msg, weather->max_temperature, weather->min_temperature);
       free(weather->fullname);
       free(weather->weather_msg);
-      free(weather);
-      printf("got weather\n");
       printf("return\n%s", msg);
       len = send (new_sockfd, msg, 10000, 0);
+      len = recv(new_sockfd, buf, BUFSIZ, 0);
     }
   }
   close(new_sockfd);

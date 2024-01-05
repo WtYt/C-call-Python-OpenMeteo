@@ -11,13 +11,14 @@ MeteoWeather *pyMeteo(const char *name, int year, int month, int day){
     weather->fullname = (char*)malloc(sizeof(char)*PY_STR_BUFFSIZE*6);
     weather->weather_msg = (char*)malloc(sizeof(char)*PY_STR_BUFFSIZE*6);
 
-    Py_Initialize();
+    //Py_Initialize();
     PyObject *sys      = PyImport_ImportModule("sys");
     PyObject *sys_path = PyObject_GetAttrString(sys, "path");
     PyList_Append(sys_path, PyUnicode_DecodeFSDefault("../pycode"));
     pName = PyUnicode_FromString("Meteo");
     pModule = PyImport_Import(pName);
     Py_DECREF(pName);
+    printf("reached\n");
 
     if (pModule != NULL) {
         pFunc = PyObject_GetAttrString(pModule, "getWeather");
@@ -71,7 +72,7 @@ MeteoWeather *pyMeteo(const char *name, int year, int month, int day){
         fprintf(stderr, "Failed to load \"Meteo\"\n");
         return NULL;
     }
-    Py_Finalize();
+    //Py_Finalize();
     return weather;
 }
 
