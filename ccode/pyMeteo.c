@@ -80,7 +80,7 @@ int main(int argc, char const *argv[]) {
   int year, month, day;
   printf("どこの天気を調べますか\n> ");
   scanf("%s", name);
-  printf("いつの天気ですか（二週間先まで、半角）\ny m d 年 月 日\n> ");
+  printf("いつの天気ですか（1940年から二週間先まで　半角）\ny m d 年 月 日\n> ");
   scanf("%d %d %d", &year, &month, &day);
   MeteoWeather* weather = pyMeteo(name, year, month, day);
   printf("%04d-%02d-%02d\n", year, month, day);
