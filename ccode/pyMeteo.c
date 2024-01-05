@@ -75,6 +75,7 @@ MeteoWeather *pyMeteo(const char *name, int year, int month, int day){
     return weather;
 }
 
+/*
 int main(int argc, char const *argv[]) {
   char name[100];
   int year, month, day;
@@ -93,3 +94,4 @@ int main(int argc, char const *argv[]) {
   free(weather);
   return 0;
 }
+*/
