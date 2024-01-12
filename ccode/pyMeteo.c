@@ -18,7 +18,7 @@ MeteoWeather *pyMeteo(const char *name, int year, int month, int day){
     pName = PyUnicode_FromString("Meteo");
     pModule = PyImport_Import(pName);
     Py_DECREF(pName);
-    printf("reached\n");
+    //printf("reached\n");
 
     if (pModule != NULL) {
         pFunc = PyObject_GetAttrString(pModule, "getWeather");

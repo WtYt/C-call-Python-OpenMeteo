@@ -22,7 +22,7 @@ def getWeather(name:str, year:int, month:int, day:int):
         url = murlbld.buildUrl()
         if not url:
             return ("error", "error", -1, -300.0, -300.0)
-        print(url)
+        print("URL="+url)
         weather = omutil.get_weather(url)
         weather_code    = weather["daily"]["weather_code"][0]
         weather_msg     = omutil.code2WeatherJP(weather_code)
