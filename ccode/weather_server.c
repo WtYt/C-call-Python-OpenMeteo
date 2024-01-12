@@ -180,8 +180,8 @@ void *handle_client(void *arg){
   else{
     printf("got weather\n");
     /*
-    when python api invoke same module,
-    critical section is required.  
+    when some threads invoke same python module,
+    critical section is required.
     */
     pthread_mutex_lock(&mutex);
     weather = pyMeteo(name, year, month, day);
