@@ -18,9 +18,9 @@ int main (int argc, char *argv[])
     exit(-1);
   }
   server = argv[1];
-  printf("server %s\n", server);
+  //printf("server %s\n", server);
   portno = strtol(argv[2], 0, 10);
-  printf("portno %d\n", portno);
+  //printf("portno %d\n", portno);
   echo_client(server, portno, argv[3], argv[4]);
 }
 
@@ -42,14 +42,14 @@ int echo_client(char *server, int portno, const char* place, const char* date)
     fprintf(stderr, "fdopen()\n");
     exit(1);
   }
-  printf("==> ");
+  //printf("==> ");
   fflush(stdout);
 
   /* gets buffer */
   char msg[100];
   sprintf(msg, "%s %s\n", place, date);
   //fgets(sbuf, BUFFERSIZE, stdin);
-  printf("%d chars\n", strlen(msg));
+  //printf("%d chars\n", strlen(msg));
   /*
   if (strncasecmp(sbuf, "exit", 4) == 0) {
     printf("break\n");
@@ -59,7 +59,7 @@ int echo_client(char *server, int portno, const char* place, const char* date)
   }
   */
 
-  fprintf(stdout, "sending: [%s]\r\n", msg );
+  //fprintf(stdout, "sending: [%s]\r\n", msg );
   fprintf(out, "%s", msg);
   //TODO read until end
   //printf("get\n");
@@ -81,7 +81,7 @@ int echo_client(char *server, int portno, const char* place, const char* date)
   */
   //printf("==> ");
   fflush(stdout);
-  printf("connection closed\n");
+  //printf("connection closed\n");
   fclose(in);
   fclose(out);
 }
