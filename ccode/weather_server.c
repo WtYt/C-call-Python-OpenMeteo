@@ -10,10 +10,13 @@
 #include <pthread.h>
 #include <Python.h>
 #include "pyMeteo.h"
+#include "weather_cache.h"
 
 #define MAX_CLIENTS 10
 
 void *handle_client(void *arg);
+
+WeatherCacheNode* head = NULL;
 
 pthread_mutex_t mutex;
 
@@ -84,6 +87,7 @@ int main (int argc, char *argv[])
       perror("pthread_create");
       exit(EXIT_FAILURE);
     }
+    pthread_detach(t);
   }
   close(sockfd);
   Py_Finalize();
@@ -122,6 +126,7 @@ void *handle_client(void *arg){
   printf("recieved %s\n", buf);
   // normal request is "name y-m-d" style
   flag = sscanf(buf, "%s %d-%d-%d", name, &year, &month, &day);
+  /* unused http response
   if (strncasecmp(name, "GET", 3) == 0) { // available for http query
     printf("recieved http query\n");
     flag = sscanf(buf, "%s /%s %s", method, msg, version);
@@ -169,7 +174,7 @@ void *handle_client(void *arg){
       //break;
     }
   }
-  else if(flag != 4){
+  else*/ if(flag != 4){
     printf("invalid request \"%s\"\n", buf);
     sprintf(msg, "invalid request \"%s\"\n", buf);
     len = send (new_sockfd, msg, 18, 0);
@@ -183,13 +188,22 @@ void *handle_client(void *arg){
     when some threads invoke same python module,
     critical section is required.
     */
+    WeatherCacheNode *n;
     pthread_mutex_lock(&mutex);
-    weather = pyMeteo(name, year, month, day);
+    if((n = searchCache(buf, head)) == NULL){
+      printf("not found in cache\n");
+      weather = pyMeteo(name, year, month, day);
+      sprintf(msg, "%04d年の%02d月%02d日の%sの天候をお知らせします 天気は%sです 最高気温は%.1lf℃です 最低気温は%.1lf℃です\n",
+      year, month, day, weather->fullname, weather->weather_msg, weather->max_temperature, weather->min_temperature);
+      free(weather->fullname);
+      free(weather->weather_msg);
+      n = makeNode(buf, msg);
+      addNode(n, &head);
+    }
+    else{
+      strcpy(msg, n->msg);
+    }
     pthread_mutex_unlock(&mutex);
-    sprintf(msg, "%04d年の%02d月%02d日の%sの天候をお知らせします 天気は%sです 最高気温は%.1lf℃です 最低気温は%.1lf℃です\n",
-    year, month, day, weather->fullname, weather->weather_msg, weather->max_temperature, weather->min_temperature);
-    free(weather->fullname);
-    free(weather->weather_msg);
     printf("return\n%s", msg);
     len = send (new_sockfd, msg, 10000, 0);
     //printf("returned\n%s", msg);

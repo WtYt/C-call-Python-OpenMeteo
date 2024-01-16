@@ -4,15 +4,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct {
+typedef struct wCacheNode WeatherCacheNode;
+
+struct wCacheNode{
   char* query;
   char* msg;
   WeatherCacheNode *next;
-}WeatherCacheNode;
+};
 
 WeatherCacheNode *makeNode(char* query, char* msg);
-WeatherCacheNode *addNode(WeatherCacheNode *node, WeatherCacheNode *head);
-int *searchCache(char* query);
-int *freeNode(WeatherCacheNode *node);
+WeatherCacheNode *addNode(WeatherCacheNode *node, WeatherCacheNode **head);
+WeatherCacheNode *searchCache(char* query, WeatherCacheNode* head);
+void freeCache(WeatherCacheNode *node);
 
 #endif
