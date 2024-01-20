@@ -37,3 +37,9 @@ root(not root of system)
 
 3, compile client
   $ gcc weather_client.c -o weather_client
+
+4, execute weather_server
+  $ ./weather_server ip port
+
+5, execute weather_client
+  $ ./weather_server ip port place y-m-d
