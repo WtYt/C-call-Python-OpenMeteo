@@ -1,3 +1,9 @@
+########################################
+# Auther : Yuta Watanabe
+# Name   : open_meteo_utility
+# Date   : 2024-01-07
+# About  : open meteo utilities
+########################################
 import requests
 
 def code2WeatherJP(code:int) -> str:

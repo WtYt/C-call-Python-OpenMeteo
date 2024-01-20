@@ -1,3 +1,9 @@
+/*****************************************
+* Auther : Yuta Watanabe
+* Name   : weather_client.h
+* Date   : 2024-01-07
+* About  : weather client
+*****************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,12 +31,7 @@ int main (int argc, char *argv[])
   int sockfd, new_sockfd;
   struct sockaddr_in serv, clnt;
   socklen_t sin_siz;
-  /*
-  pthread_t threads[MAX_CLIENTS];
-  for (size_t j = 0; j < MAX_CLIENTS; j++){
-    threads[j] = 0;
-  }
-  */
+
   int port, i;
   if(argc != 3){
     printf("Usage: ./prog host port\n");
@@ -63,25 +64,6 @@ int main (int argc, char *argv[])
       exit(EXIT_FAILURE);
     }
 
-    // TODO      : Array style to pointer style
-    // reference : https://jp-seemore.com/iot/10995/#toc12
-    /*
-    for (i = 0; i < MAX_CLIENTS; i++){
-      if (threads[i] == 0){
-        if (pthread_create(&threads[i], NULL, handle_client, (void *)(intptr_t)new_sockfd) != 0){
-          perror("pthread_create");
-          exit(EXIT_FAILURE);
-        }
-        pthread_detach(threads[i]);
-        break;
-      }
-    }
-    if (i == MAX_CLIENTS) {
-        printf("Too many clients\n");
-        close(new_sockfd);
-    }
-    */
-    //fix under here
     pthread_t t;
     if (pthread_create(&t, NULL, handle_client, (void *)(intptr_t)new_sockfd) != 0){
       perror("pthread_create");
@@ -124,57 +106,9 @@ void *handle_client(void *arg){
     printf("buf[2] = %d\n", buf[2]);
   }
   printf("recieved %s\n", buf);
-  // normal request is "name y-m-d" style
+  // request is "name y-m-d" style
   flag = sscanf(buf, "%s %d-%d-%d", name, &year, &month, &day);
-  /* unused http response
-  if (strncasecmp(name, "GET", 3) == 0) { // available for http query
-    printf("recieved http query\n");
-    flag = sscanf(buf, "%s /%s %s", method, msg, version);
-    flag = sscanf(msg, "%s_%d-%d-%d", name, &year, &month, &day);
-    len = recv(new_sockfd, buf, BUFSIZ, 0);
-    buf[len] = '\0';
-    while((flag = sscanf(buf, "%s", name)) != EOF){
-      len = recv(new_sockfd, buf, BUFSIZ, 0);
-      buf[len] = '\0';
-    }
-    if(flag != 4 || len <= 0){
-      printf("invalid request \"%s\"\n", buf);
-      sprintf(msg, "invalid request \"%s\"\n", buf);
-      len = send (new_sockfd, msg, BUFSIZ+18, 0);
-      close(new_sockfd);
-      pthread_exit(NULL);
-    }
-    else{
-      pthread_mutex_lock(&mutex);
-      weather = pyMeteo(name, year, month, day);
-      pthread_mutex_unlock(&mutex);
-      sprintf(msg, "HTTP/1.0 200 OK\r\nContent−Type: text/html\r\n\r\n");
-      printf("return\n%s", msg);
-      len = send (new_sockfd, msg, 10000, 0);
-      sprintf(msg, "<html>\r\n");
-      printf("return\n%s", msg);
-      len = send (new_sockfd, msg, 10000, 0);
-      sprintf(msg, "<head>\r\n<title>%sの天気予報</title>\r\n</head>\r\n", weather->fullname);
-      printf("return\n%s", msg);
-      len = send (new_sockfd, msg, 10000, 0);
-      sprintf(msg, "<body>\r\n<h1>%04d年の%02d月%02d日の%sの天候をお知らせします</h1><br>\r\n<h3>天気は%sです</h3><br>\r\n",
-      year, month, day, weather->fullname, weather->weather_msg);
-      printf("return\n%s", msg);
-      len = send (new_sockfd, msg, 10000, 0);
-      sprintf(msg, "<h3>最高気温は%.1lf℃です</h3><br>\r\n<h3>最低気温は%.1lf℃です</h3><br>\r\n</body>\r\n",
-      weather->max_temperature, weather->min_temperature);
-      printf("return\n%s", msg);
-      len = send (new_sockfd, msg, 10000, 0);
-      sprintf(msg, "</html>");
-      printf("return\n%s", msg);
-      len = send (new_sockfd, msg, 10000, 0);
-      free(weather->fullname);
-      free(weather->weather_msg);
-      free(weather);
-      //break;
-    }
-  }
-  else*/ if(flag != 4){
+  if(flag != 4){
     printf("invalid request \"%s\"\n", buf);
     sprintf(msg, "invalid request \"%s\"\n", buf);
     len = send (new_sockfd, msg, 18, 0);
@@ -206,12 +140,7 @@ void *handle_client(void *arg){
     pthread_mutex_unlock(&mutex);
     printf("return\n%s", msg);
     len = send (new_sockfd, msg, 10000, 0);
-    //printf("returned\n%s", msg);
   }
-  /*
-  while(strncasecmp(buf, "exit", 4) != 0){
-  }
-  */
   printf("close connection");
   close(new_sockfd);
   pthread_exit(NULL);

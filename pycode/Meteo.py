@@ -1,3 +1,9 @@
+########################################
+# Auther : Yuta Watanabe
+# Name   : Meteo
+# Date   : 2024-01-07
+# About  : get weather from OpenMeteo
+########################################
 import open_meteo_url_builder as omubld
 import open_meteo_utility as omutil
 import coordinates_searcher as csrch

@@ -1,3 +1,9 @@
+/*****************************************
+* Auther : Yuta Watanabe
+* Name   : weather_cache.h
+* Date   : 2024-01-07
+* About  : cache weather information
+*****************************************/
 #ifndef _WEATHER_CACHE_H
 #define  _WEATHER_CACHE_H
 

@@ -1,3 +1,9 @@
+/*****************************************
+* Auther : Yuta Watanabe
+* Name   : pyMeteo.c
+* Date   : 2024-01-07
+* About  : invoke python module
+*****************************************/
 #include <Python.h>
 #include <stdlib.h>
 #include <string.h>

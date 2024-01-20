@@ -1,3 +1,9 @@
+/*****************************************
+* Auther : Yuta Watanabe
+* Name   : weather_client.c
+* Date   : 2024-01-07
+* About  : weather client
+*****************************************/
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
