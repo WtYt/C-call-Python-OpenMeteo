@@ -159,3 +159,5 @@ temp/
 # C lang files
 *.o
 a.out
+weather_server
+weather_client
