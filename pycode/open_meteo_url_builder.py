@@ -36,11 +36,31 @@ class MeteoURLBuilder: # easily created, not completed fully.
     def setLatitude(self, y:float):
         self.latitude  = y
 
+    def setCoordinates(self, x:float, y:float):
+        self.longitude = x
+        self.latitude  = y
+
+    def removeLongitude(self):
+        self.longitude = float("nan")
+
+    def removeLatitude(self):
+        self.latitude  = float("nan")
+
+    def removeCoordinates(self):
+        self.longitude = float("nan")
+        self.latitude  = float("nan")
+
     def setTimeZone(self, timezone:str):
         self.timezone = timezone
 
+    def removeTimeZone(self):
+        self.timezone = None
+
     def setForecastDays(self, forecast_days:str):
         self.forecast_days = forecast_days
+
+    def removeForecastDays(self):
+        self.forecast_days = None
 
     def addParameter(self, parameter:str): # unused. useful for generalization?
         pass
@@ -48,11 +68,20 @@ class MeteoURLBuilder: # easily created, not completed fully.
     def addHourlyParameter(self, parameter:str):
         self.hourly_parameters.append(parameter)
 
+    def clearHourlyParameter(self):
+        self.hourly_parameters = []
+
     def addDailyParameter(self, parameter:str):
         self.daily_parameters.append(parameter)
 
+    def clearDailyParameter(self):
+        self.daily_parameters = []
+
     def addCurrentParameter(self, parameter:str):
         self.current_parameters.append(parameter)
+
+    def clearCurrentParameter(self):
+        self.current_parameters = []
 
     def buildUrl(self) -> str:
         if math.isnan(self.latitude) or math.isnan(self.longitude):
@@ -134,12 +163,20 @@ class MeteoArchiveURLBuilder(MeteoURLBuilder):
         self.current_parameters = []
         self.timezone           = None
 
+    # unavailable on archive
     def setForecastDays(self, forecast_days:str):
+        pass
+
+    def removeForecastDays(self):
         pass
 
     def setStartEnd(self, start:datetime.datetime, end:datetime.datetime):
         self.start_date = start
         self.end_date = end
+
+    def removeStartEnd(self):
+        self.start_date = None
+        self.end_date = None
 
     def buildUrl(self) -> str:
         if math.isnan(self.latitude) or math.isnan(self.longitude):

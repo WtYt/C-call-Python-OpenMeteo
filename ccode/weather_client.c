@@ -54,22 +54,8 @@ int echo_client(char *server, int portno, const char* place, const char* date)
   /* gets buffer */
   char msg[100];
   sprintf(msg, "%s %s\n", place, date);
-  //fgets(sbuf, BUFFERSIZE, stdin);
-  //printf("%d chars\n", strlen(msg));
-  /*
-  if (strncasecmp(sbuf, "exit", 4) == 0) {
-    printf("break\n");
-    fprintf(stdout, "sending: [%s]\n", sbuf );
-    fprintf(out, "%s", sbuf);
-    break;
-  }
-  */
 
-  //fprintf(stdout, "sending: [%s]\r\n", msg );
   fprintf(out, "%s", msg);
-  //TODO read until end
-  //printf("get\n");
-  //printf("got\n");
   fgets(rbuf, BUFFERSIZE, in);
   for (size_t l = 0; l < strlen(rbuf); l++) {
     if (rbuf[l] == ' ') {
@@ -77,17 +63,7 @@ int echo_client(char *server, int portno, const char* place, const char* date)
     }
   }
   printf("%s", rbuf);
-  /*
-  fgets(rbuf, BUFFERSIZE, in);
-  printf("%s", rbuf);
-  fgets(rbuf, BUFFERSIZE, in);
-  printf("%s", rbuf);
-  fgets(rbuf, BUFFERSIZE, in);
-  printf("%s", rbuf);
-  */
-  //printf("==> ");
   fflush(stdout);
-  //printf("connection closed\n");
   fclose(in);
   fclose(out);
 }

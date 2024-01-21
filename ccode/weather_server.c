@@ -73,6 +73,7 @@ int main (int argc, char *argv[])
   }
   close(sockfd);
   Py_Finalize();
+  freeCache(head);
   return 0;
 }
 
@@ -127,6 +128,7 @@ void *handle_client(void *arg){
     if((n = searchCache(buf, head)) == NULL){
       printf("not found in cache\n");
       weather = pyMeteo(name, year, month, day);
+      // create message
       sprintf(msg, "%04d年の%02d月%02d日の%sの天候をお知らせします 天気は%sです 最高気温は%.1lf℃です 最低気温は%.1lf℃です\n",
       year, month, day, weather->fullname, weather->weather_msg, weather->max_temperature, weather->min_temperature);
       free(weather->fullname);
@@ -135,6 +137,7 @@ void *handle_client(void *arg){
       addNode(n, &head);
     }
     else{
+      // copy message from cache
       strcpy(msg, n->msg);
     }
     pthread_mutex_unlock(&mutex);
